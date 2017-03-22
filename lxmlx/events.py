@@ -76,6 +76,27 @@ def clone(elt):
 
     return out
 
+def parse(filename):
+    """Parses file content into events stream"""
+    for event, elt in et.iterparse(filename, events= ('start', 'end', 'comment', 'pi'), huge_tree=True):
+        if event == 'start':
+            yield ENTER, elt
+            if elt.text:
+                yield TEXT, elt.text
+        elif event == 'end':
+            yield EXIT, elt
+            if elt.tail:
+                yield TEXT, elt.tail
+            elt.clear()
+        elif event == 'comment':
+            yield ENTER, elt
+            yield EXIT, elt
+        elif event == 'pi':
+            yield ENTER, elt
+            yield EXIT, elt
+        else:
+            assert False, (event, elt)
+
 def subtree(events):
     """selects sub-tree events"""
     stack = 0
