@@ -1,4 +1,5 @@
 # lxmlx
+[![Build Status](https://travis-ci.org/innodatalabs/lxmlx.svg?branch=master)](https://travis-ci.org/innodatalabs/lxmlx)
 
 Helpers and utilities to be used with lxml
 
