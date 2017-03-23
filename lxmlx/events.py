@@ -36,7 +36,7 @@ def unscan(events):
     stack = []
     for event, obj in events:
 
-        if event is ENTER:
+        if event == ENTER:
             out = clone(obj)
             if stack:
                 stack[-1].append(out)
@@ -47,10 +47,10 @@ def unscan(events):
             stack.append(out)
             last_closed_elt = None
 
-        elif event is EXIT:
+        elif event == EXIT:
             last_closed_elt = stack.pop()
 
-        elif event is TEXT:
+        elif event == TEXT:
             if obj:
                 if last_closed_elt is None:
                     stack[-1].text = (stack[-1].text or '') + obj
@@ -101,9 +101,9 @@ def subtree(events):
     """selects sub-tree events"""
     stack = 0
     for event, obj in events:
-        if event is ENTER:
+        if event == ENTER:
             stack += 1
-        elif event is EXIT:
+        elif event == EXIT:
             if stack == 0:
                 break
             stack -= 1
@@ -113,7 +113,7 @@ def merge_text(events):
     """merges each run of successive text events into one text event"""
     text = []
     for event, obj in events:
-        if event is TEXT:
+        if event == TEXT:
             text.append(obj)
         else:
             if text:
