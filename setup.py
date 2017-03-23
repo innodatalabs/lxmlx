@@ -1,21 +1,31 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import io
-from os import path
+import os
+import re
 
-here = path.abspath(path.dirname(__file__))
+NAME = 'lxmlx'
 
-# Get the long description from the README file
-with io.open(path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+def meta(name, default='__raise__'):
+    with io.open(os.path.join(NAME, '__init__.py'), encoding='utf-8') as f:
+        text = f.read()
+    pattern = r'''__{meta}__\s*=\s*(\'\'\'|\"\"\"|\"|\')(.*?)\1'''.format(meta=name)
+    mtc = re.search(pattern, text, re.MULTILINE|re.DOTALL)
+    if mtc is not None:
+        return mtc.group(2)
+    if default != '__raise__':
+        return default
+    raise RuntimeError('Could not find __{meta}__ in {name}/__init__.py'.format(meta=meta, name=NAME))
 
 setup(
-    name='lxmlx',
-    version='0.1.0',
-    description='Helpers and utilities to be used with lxml',
-    long_description=long_description,
-    url='https://github.com/innodatalabs/lxmlx',
-    author='Mike Kroutikov',
-    author_email='mkroutikov@innodata.com',
+    name=NAME,
+    version=meta('version'),
+    description=meta('description'),
+    long_description=meta('long_description', 'See ' + meta('url')),
+    url=meta('url'),
+    author=meta('author'),
+    author_email=meta('author_email'),
+    keywords=meta('keywords'),
+
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -29,7 +39,6 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    keywords='lxml xml events sax',
-    packages=['lxmlx'],
+    packages=[NAME],
     install_requires=['lxml'],
 )
