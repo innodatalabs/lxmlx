@@ -3,6 +3,11 @@
 
 Helpers and utilities to be used with lxml
 
+## Requirements
+
+1. Python 3.3 or better (for `yield from` support)
+2. `lxml` (obviously)
+
 ## Event stream
 Event stream is XML representation which is equivalent to the in-memory tree.
 
