@@ -16,6 +16,7 @@ It is similar to SAX parsing events, except:
 
 1. we use simplified set of events (ENTER, EXIT, TEXT, COMMENT and PI)
 2. events are represented natively as Python streams (generators)
+3. event objects are JSON-serializable
 3. we use events for complete XML processing: parsing, transformation, writing
 
 Each event in the stream is a dict containing at least `type` key
@@ -23,6 +24,7 @@ Each event in the stream is a dict containing at least `type` key
 ## ENTER event
 `ENTER` event is fired to indicate the opening of an XML tag. Payload:
 
+* `type` must be string `"enter"` (or constant `lxmlx.events_json.ENTER`)
 * `tag` element tag
 * `attrib` optional - a dictionary of attributes
 
@@ -43,6 +45,8 @@ Example:
 expected, because it implicitly corresponds to the opening tag from `ENTER`
 event.
 
+* `type` must be string `"exit"` (or constant `lxmlx.events_json.EXIT`)
+
 Example:
 ```
 {
@@ -53,6 +57,7 @@ Example:
 ## TEXT event
 `TEXT` event is fired to indicate XML `CTEXT` value. Payload is:
 
+* `type` must be string `"text"` (or constant `lxmlx.events_json.TEXT`)
 * `text` - required
 
 Example:
@@ -66,6 +71,7 @@ Example:
 ## COMMENT
 
 Payload is:
+* `type` must be string `"comment"` (or constant `lxmlx.events_json.COMMENT`)
 * `text` - required
 
 Example:
@@ -79,6 +85,7 @@ Example:
 ## PI
 `PI` - processing instruction. Payload:
 
+* `type` must be string `"pi"` (or constant `lxmlx.events_json.PI`)
 * `target` - required PI target (aka tag)
 * `text` - optional PI text content
 
@@ -155,8 +162,6 @@ tasks are better done on event stream representation.
    the size of the XML document. Even huge XML documents can be transformed
    quickly using small amount of RAM.
 
-5. XML events are JSON-serializable and can be easily saved/loaded or transported
-   over the wire.
 
 ## Well-formed event stream
 
