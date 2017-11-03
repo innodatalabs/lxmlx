@@ -14,23 +14,62 @@ Event stream is XML representation which is equivalent to the in-memory tree.
 
 It is similar to SAX parsing events, except:
 
-1. we use simplified set of events (three events, actually - ENTER, EXIT, and TEXT)
+1. we use simplified set of events (ENTER, EXIT, TEXT, COMMENT and PI)
 2. events are represented natively as Python streams (generators)
 3. we use events for complete XML processing: parsing, transformation, writing
 
-Each event in the stream is a tuple, containing:
-* event type
-* event object
+Each event in the stream is a dict containing at least `type` key:
 
 Events types:
-1. `ENTER` event is fired to indicate the opening of an XML tag. Event object is
-   `lxml.etree.Element` where value for `tag` and `attrib` attributes are
-   guaranteed to be set. Children and text/tail attributes should not be used.
-2. `EXIT` event is fired to indicate closing of an XML tag. Event object is
-   `lxml.etree.Element` object, same as in the matching `ENTER`.
-3. `TEXT` event is fired to indicate XML `CTEXT` value.
+1. `ENTER` event is fired to indicate the opening of an XML tag. Payload:
+  * `tag` element tag
+  * `attrib` optional - a dictionary of attributes
+  Example:
+  ```
+  {
+    'type'  : 'enter',
+    'tag'   : 'font',
+    'attrib': {
+      'name' : 'Times',
+      'style': 'bold'
+    }
+  }
+  ```
+2. `EXIT` event is fired to indicate closing of an XML tag. No payload is
+   expected, because it implicitly corresponds to the opening tag from `ENTER`
+   event.
+3. `TEXT` event is fired to indicate XML `CTEXT` value. Payload is:
+  * `text` - required
+  Example:
+  ```
+  {
+    "type": "text",
+    "text": "Hello!"
+  }
+  ```
+4. `COMMENT`. Payload is:
+  * `text` - required
+  Example:
+  ```
+  {
+    "type": "comment",
+    "text": "Hello!"
+  }
+  ```
+5. `PI` - processing instruction. Payload:
+  * `target` - required PI target (aka tag)
+  * `text` - optional PI text content
+  Example:
+  ```
+  {
+    "type"  : "pi",
+    "target": "myPI",
+    "text"  : "my cool text here"
+  }
+  ```
 
-Our definition of event stream is consisten with depth-first left-to-right
+
+Our definition of event stream is consistent with depth-first left-to-right
 traversal of XML tree.
 
 Example:
@@ -44,17 +83,23 @@ Example:
 
 can equivalently be represented by the following event stream:
 ```
-ENTER, lxml.etree.Element('book')
-ENTER, lxml.etree.Element('chapter', {'id': '1'})
-TEXT , "Introduction"
-EXIT , lxml.etree.Element('chapter', {'id': '1'})
-ENTER, lxml.etree.Element('chapter', {'id': '2'})
-TEXT , "Preface"
-EXIT , lxml.etree.Element('chapter', {'id': '2'})
-ENTER, lxml.etree.Element('chapter', {'id': '3'})
-TEXT , "title"
-EXIT , lxml.etree.Element('chapter', {'id': '3'})
-EXIT , lxml.etree.Element('book')
+[
+  {"type": "enter", "tag": "book"},
+
+  {"type": "enter", "tag": "chapter", "attrib": {"id": "1"}},
+  {"type": "text", "text": "Introduction"},
+  {"type": "exit"},
+
+  {"type": "enter", "tag": "chapter", "attrib": {"id": "2"}},
+  {"type": "text", "text": "Preface"},
+  {"type": "exit"},
+
+  {"type": "enter", "tag": "chapter", "attrib": {"id": "3"}},
+  {"type": "text", "text": "Title"},
+  {"type": "exit"},
+
+  {"type": "exit"}
+]
 ```
 
 ### Why do we need event stream representation of XML?
@@ -76,7 +121,7 @@ tasks are better done on event stream representation.
    representation this becomes quite trivial: accept only `TEXT` events and
    join the resulting text pieces together:
    ```
-   ''.join(txt for evt,txt in events if evt==TEXT)
+   ''.join(evt['text'] for evt in events if evt['type']==TEXT)
    ```
 
 3. Wrapping XML elements. Daunting task using XML tree representation. Very

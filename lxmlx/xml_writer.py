@@ -4,7 +4,7 @@ import lxml.etree as et
 import re
 import itertools
 import contextlib
-from lxmlx.events import ENTER, EXIT, TEXT
+from lxmlx.events_json import ENTER, EXIT, TEXT, COMMENT, PI
 from lxmlx.validate import validate_xml_text, validate_xml_name, \
     validate_pi_text, validate_comment_text, xml_escape_text, \
     xml_escape_attr
@@ -119,9 +119,9 @@ class XmlWriter:
 
         self._empty = True
 
-    def write_exit(self, tag):
+    def write_exit(self, tag=None):
         old_tag, value = self._tags.pop()
-        if old_tag != tag:
+        if tag is not None and old_tag != tag:
             raise RuntimeError('unbalanced XML tags: ' + tag + ' (expected ' + old_tag + ')')
 
         if self._empty:
@@ -160,16 +160,32 @@ class XmlWriter:
     def write_events(self, events):
 
         for event, obj in events:
-            if event is ENTER:
+            if event == ENTER:
                 if obj.tag is et.Comment:
                     self.write_comment(obj.text)
                 elif obj.tag is et.PI:
                     self.write_pi(obj.target, obj.text)
                 else:
                     self.write_enter(obj.tag, attrib=obj.attrib, nsmap=obj.nsmap)
-            elif event is EXIT:
+            elif event == EXIT:
                 if obj.tag not in (et.Comment, et.PI):
                     self.write_exit(obj.tag)
             else:
-                assert event is TEXT
+                assert event == TEXT
                 self.write_text(obj)
+
+    def write_events_json(self, events, nsmap=None):
+
+        for obj in events:
+            if obj['type'] == ENTER:
+                self.write_enter(obj['tag'], attrib=obj.get('attrib'), nsmap=nsmap)
+            elif obj['type'] == EXIT:
+                self.write_exit()
+            elif obj['type'] == TEXT:
+                self.write_text(obj['text'])
+            elif obj['type'] == COMMENT:
+                self.write_comment(obj['text'])
+            elif obj['type'] == PI:
+                self.write_pi(obj['target'], obj.get('text'))
+            else:
+                assert False, obj
