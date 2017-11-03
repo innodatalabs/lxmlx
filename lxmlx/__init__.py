@@ -1,4 +1,4 @@
-__version__      = '0.1.1'
+__version__      = '0.2.0'
 __description__  = 'Helpers and utilities to be used with lxml'
 __url__          = 'https://github.com/innodatalabs/lxmlx'
 __author__       = 'Mike Kroutikov'
