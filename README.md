@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/innodatalabs/lxmlx.svg?branch=master)](https://travis-ci.org/innodatalabs/lxmlx)
 [![PyPI version](https://badge.fury.io/py/lxmlx.svg)](https://badge.fury.io/py/lxmlx)
 
-Helpers and utilities to be used with lxml
+Helpers and utilities for streaming processing of XML documents. Intended to be used with [lxml](http://lxml.de)
 
 ## Requirements
 
@@ -18,61 +18,84 @@ It is similar to SAX parsing events, except:
 2. events are represented natively as Python streams (generators)
 3. we use events for complete XML processing: parsing, transformation, writing
 
-Each event in the stream is a dict containing at least `type` key:
+Each event in the stream is a dict containing at least `type` key
 
-Events types:
-1. `ENTER` event is fired to indicate the opening of an XML tag. Payload:
-  * `tag` element tag
-  * `attrib` optional - a dictionary of attributes
-  Example:
-  ```
-  {
-    'type'  : 'enter',
-    'tag'   : 'font',
-    'attrib': {
-      'name' : 'Times',
-      'style': 'bold'
-    }
-  }
-  ```
-2. `EXIT` event is fired to indicate closing of an XML tag. No payload is
-   expected, because it implicitly corresponds to the opening tag from `ENTER`
-   event.
-3. `TEXT` event is fired to indicate XML `CTEXT` value. Payload is:
-  * `text` - required
-  Example:
-  ```
-  {
-    "type": "text",
-    "text": "Hello!"
-  }
-  ```
-4. `COMMENT`. Payload is:
-  * `text` - required
-  Example:
-  ```
-  {
-    "type": "comment",
-    "text": "Hello!"
-  }
-  ```
-5. `PI` - processing instruction. Payload:
-  * `target` - required PI target (aka tag)
-  * `text` - optional PI text content
-  Example:
-  ```
-  {
-    "type"  : "pi",
-    "target": "myPI",
-    "text"  : "my cool text here"
-  }
-  ```
+## ENTER event
+`ENTER` event is fired to indicate the opening of an XML tag. Payload:
 
+* `tag` element tag
+* `attrib` optional - a dictionary of attributes
+
+Example:
+```
+{
+  'type'  : 'enter',
+  'tag'   : 'font',
+  'attrib': {
+    'name' : 'Times',
+    'style': 'bold'
+  }
+}
+```
+
+## EXIT event
+`EXIT` event is fired to indicate closing of an XML tag. No payload is
+expected, because it implicitly corresponds to the opening tag from `ENTER`
+event.
+
+Example:
+```
+{
+  "type": "exit"
+}
+```
+
+## TEXT event
+`TEXT` event is fired to indicate XML `CTEXT` value. Payload is:
+
+* `text` - required
+
+Example:
+```
+{
+  "type": "text",
+  "text": "Hello!"
+}
+```
+
+## COMMENT
+
+Payload is:
+* `text` - required
+
+Example:
+```
+{
+  "type": "comment",
+  "text": "Hello!"
+}
+```
+
+## PI
+`PI` - processing instruction. Payload:
+
+* `target` - required PI target (aka tag)
+* `text` - optional PI text content
+
+Example:
+```
+{
+  "type"  : "pi",
+  "target": "myPI",
+  "text"  : "my cool text here"
+}
+```
 
 Our definition of event stream is consistent with depth-first left-to-right
 traversal of XML tree.
 
-Example:
+## Example
+XML document below
 ```
 <book>
    <chapter id="1">Introduction</chapter>
@@ -131,6 +154,9 @@ tasks are better done on event stream representation.
 4. When implemented right, event stream uses limited memory, independent of
    the size of the XML document. Even huge XML documents can be transformed
    quickly using small amount of RAM.
+
+5. XML events are JSON-serializable and can be easily saved/loaded or transported
+   over the wire.
 
 ## Well-formed event stream
 
