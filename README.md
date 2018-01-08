@@ -6,8 +6,7 @@ Helpers and utilities for streaming processing of XML documents. Intended to be 
 
 ## Requirements
 
-1. Python 3.3 or better (for `yield from` support)
-2. `lxml` (obviously)
+* `lxml` (obviously)
 
 ## Event stream
 Event stream is XML representation which is equivalent to the in-memory tree.
@@ -24,7 +23,7 @@ Each event in the stream is a dict containing at least `type` key
 ## ENTER event
 `ENTER` event is fired to indicate the opening of an XML tag. Payload:
 
-* `type` must be string `"enter"` (or constant `lxmlx.events_json.ENTER`)
+* `type` must be string `"enter"` (or constant `lxmlx.event.ENTER`)
 * `tag` element tag
 * `attrib` optional - a dictionary of attributes
 
@@ -45,7 +44,7 @@ Example:
 expected, because it implicitly corresponds to the opening tag from `ENTER`
 event.
 
-* `type` must be string `"exit"` (or constant `lxmlx.events_json.EXIT`)
+* `type` must be string `"exit"` (or constant `lxmlx.event.EXIT`)
 
 Example:
 ```
@@ -57,7 +56,7 @@ Example:
 ## TEXT event
 `TEXT` event is fired to indicate XML `CTEXT` value. Payload is:
 
-* `type` must be string `"text"` (or constant `lxmlx.events_json.TEXT`)
+* `type` must be string `"text"` (or constant `lxmlx.event.TEXT`)
 * `text` - required
 
 Example:
@@ -71,7 +70,7 @@ Example:
 ## COMMENT
 
 Payload is:
-* `type` must be string `"comment"` (or constant `lxmlx.events_json.COMMENT`)
+* `type` must be string `"comment"` (or constant `lxmlx.event.COMMENT`)
 * `text` - required
 
 Example:
@@ -85,7 +84,7 @@ Example:
 ## PI
 `PI` - processing instruction. Payload:
 
-* `type` must be string `"pi"` (or constant `lxmlx.events_json.PI`)
+* `type` must be string `"pi"` (or constant `lxmlx.event.PI`)
 * `target` - required PI target (aka tag)
 * `text` - optional PI text content
 

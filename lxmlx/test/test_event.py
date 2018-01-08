@@ -1,6 +1,8 @@
+from __future__ import unicode_literals
+from __future__ import print_function
 import unittest
 import lxml.etree as et
-from lxmlx.events_json import scan, unscan, with_peer
+from lxmlx.event import scan, unscan, with_peer
 
 
 class TestEventsJson(unittest.TestCase):
@@ -35,6 +37,26 @@ class TestEventsJson(unittest.TestCase):
 
         result = et.tostring(xml)
         model = b'<a>Hello! <b>World</b>!</a>'
+        if model != result:
+            print(model)
+            print(result)
+            self.fail()
+
+    def test_unscan(self):
+
+        events = [
+            dict(type='enter', tag='{ns_a}a'),
+            dict(type='text',  text='Hello! '),
+            dict(type='enter', tag='{ns_b}b'),
+            dict(type='text',  text='World'),
+            dict(type='exit'),
+            dict(type='text',  text='!'),
+            dict(type='exit'),
+        ]
+        xml = unscan(events, nsmap={'a': 'ns_a', 'b': 'ns_b'})
+
+        result = et.tostring(xml)
+        model = b'<a:a xmlns:a="ns_a" xmlns:b="ns_b">Hello! <b:b>World</b:b>!</a:a>'
         if model != result:
             print(model)
             print(result)

@@ -1,10 +1,12 @@
 # coding: utf-8
+from __future__ import unicode_literals
+from __future__ import print_function
 import io
 import lxml.etree as et
 import re
 import itertools
 import contextlib
-from lxmlx.events_json import ENTER, EXIT, TEXT, COMMENT, PI
+from lxmlx.event import ENTER, EXIT, TEXT, COMMENT, PI
 from lxmlx.validate import validate_xml_text, validate_xml_name, \
     validate_pi_text, validate_comment_text, xml_escape_text, \
     xml_escape_attr
@@ -157,24 +159,7 @@ class XmlWriter:
         validate_xml_text(text)
         self.__write(xml_escape_text(text))
 
-    def write_events(self, events):
-
-        for event, obj in events:
-            if event == ENTER:
-                if obj.tag is et.Comment:
-                    self.write_comment(obj.text)
-                elif obj.tag is et.PI:
-                    self.write_pi(obj.target, obj.text)
-                else:
-                    self.write_enter(obj.tag, attrib=obj.attrib, nsmap=obj.nsmap)
-            elif event == EXIT:
-                if obj.tag not in (et.Comment, et.PI):
-                    self.write_exit(obj.tag)
-            else:
-                assert event == TEXT
-                self.write_text(obj)
-
-    def write_events_json(self, events, nsmap=None):
+    def write_events(self, events, nsmap=None):
 
         for obj in events:
             if obj['type'] == ENTER:

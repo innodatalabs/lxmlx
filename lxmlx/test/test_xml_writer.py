@@ -1,9 +1,10 @@
+from __future__ import unicode_literals
+from __future__ import print_function
 import unittest
 from lxmlx.xml_writer import XmlWriter
 import io
 import lxml.etree as et
-from lxmlx.events import scan
-from lxmlx.events_json import scan as scan_json
+from lxmlx.event import scan
 
 
 class XmlWriterHelper(XmlWriter):
@@ -19,25 +20,13 @@ class XmlWriterHelper(XmlWriter):
 
 class TestXmlWriter(unittest.TestCase):
 
-    def _test_roundtrip(self, text, model=None):
+    def _test_roundtrip(self, text, model=None, nsmap=None):
         xml = et.fromstring(text)
+        if nsmap is None:
+            nsmap = xml.nsmap
 
         w = XmlWriterHelper()
-        w.write_events(scan(xml))
-
-        if model is None:
-            model = text
-        if w.data != model:
-            print(model)
-            print(et.tostring(xml))
-            print(w.data)
-            self.fail('Not equal')
-
-    def _test_roundtrip_json(self, text, model=None, nsmap=None):
-        xml = et.fromstring(text)
-
-        w = XmlWriterHelper()
-        w.write_events_json(scan_json(xml), nsmap=nsmap)
+        w.write_events(scan(xml), nsmap=nsmap)
 
         if model is None:
             model = text
@@ -77,34 +66,25 @@ class TestXmlWriter(unittest.TestCase):
         self._test_roundtrip(b'<root>Hello&amp;</root>')
         self._test_roundtrip(b'<root>H&#65;ello&amp;</root>', model=b'<root>HAello&amp;</root>')
 
-        self._test_roundtrip_json(b'<root/>')
-        self._test_roundtrip_json(b'<root>Hello</root>')
-        self._test_roundtrip_json(b'<root>Hello&amp;</root>')
-        self._test_roundtrip_json(b'<root>H&#65;ello&amp;</root>', model=b'<root>HAello&amp;</root>')
-
     def test04(self):
         self._test_roundtrip(b'<root lang="en"/>')
         self._test_roundtrip(b'<root text="hello&apos;&#10;here"/>', model=b'<root text="hello\'&#10;here"/>')
 
-        self._test_roundtrip_json(b'<root lang="en"/>')
-        self._test_roundtrip_json(b'<root text="hello&apos;&#10;here"/>', model=b'<root text="hello\'&#10;here"/>')
-
     def test05(self):
         self._test_roundtrip(b'<root><!-- this is a comment --></root>')
-        self._test_roundtrip_json(b'<root><!-- this is a comment --></root>')
 
     def test06(self):
         self._test_roundtrip(b'<root><?pi1 this is a pi?></root>')
-        self._test_roundtrip_json(b'<root><?pi1 this is a pi?></root>')
 
     def test07(self):
         self._test_roundtrip(b'<root xmlns:a="ns-a"/>')
-        self._test_roundtrip_json(b'<root xmlns:a="ns-a"/>', nsmap={'a': 'ns-a'})
 
     def test08(self):
         self._test_roundtrip(b'<root xmlns:a="ns-a"><child xmlns:b="ns-a"/></root>')
-        self._test_roundtrip_json(b'<root xmlns:a="ns-a"><child xmlns:b="ns-a"/></root>', nsmap={'a': 'ns-a'})
 
     def test08(self):
         self._test_roundtrip(b'<root xmlns:a="ns-a"><a:child a:lang="en"/></root>')
-        self._test_roundtrip_json(b'<root xmlns:a="ns-a"><a:child a:lang="en"/></root>', nsmap={'a': 'ns-a'})
+
+
+if __name__ == '__main__':
+    unittest.main()
