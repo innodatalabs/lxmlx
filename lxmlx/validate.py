@@ -1,5 +1,8 @@
+from __future__ import unicode_literals
+from __future__ import print_function
 import re
 import itertools
+from builtins import chr
 
 __TEXT_ESCAPE = {
     '\u000d': '&#13;',

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from __future__ import print_function
 """
 XML can be represented as a series of events (similar to SAX).
 
@@ -50,7 +52,7 @@ def scan(xml):
         yield {'type': TEXT, 'text': xml.text}
 
     for c in xml:
-        yield from scan(c)
+        for x in scan(c): yield x
         if c.tail:
             yield {'type': TEXT, 'text': c.tail}
 
