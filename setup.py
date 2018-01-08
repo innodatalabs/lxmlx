@@ -29,5 +29,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=[NAME],
-    install_requires=['lxml'],
+    install_requires=['lxml~=4.1.0', 'future~=0.16.0'],
 )
