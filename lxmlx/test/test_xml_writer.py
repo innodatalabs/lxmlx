@@ -22,6 +22,8 @@ class TestXmlWriter(unittest.TestCase):
 
     def _test_roundtrip(self, text, model=None, nsmap=None):
         xml = et.fromstring(text)
+        if nsmap is None:
+            nsmap = xml.nsmap
 
         w = XmlWriterHelper()
         w.write_events(scan(xml), nsmap=nsmap)
@@ -82,3 +84,7 @@ class TestXmlWriter(unittest.TestCase):
 
     def test08(self):
         self._test_roundtrip(b'<root xmlns:a="ns-a"><a:child a:lang="en"/></root>')
+
+
+if __name__ == '__main__':
+    unittest.main()
