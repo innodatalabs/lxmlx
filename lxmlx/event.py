@@ -168,3 +168,6 @@ def with_peer(events):
             yield obj, stack.pop()
         else:
             yield obj, None
+
+def text_of(events):
+    return ''.join(o['text'] for o in events if o['type']==TEXT)
