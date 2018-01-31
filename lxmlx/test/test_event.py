@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import unittest
 import lxml.etree as et
-from lxmlx.event import scan, unscan, with_peer
+from lxmlx.event import scan, unscan, with_peer, text_of
 
 
 class TestEventsJson(unittest.TestCase):
@@ -105,6 +105,16 @@ class TestEventsJson(unittest.TestCase):
         _roundtrip(b'<a:root xmlns:a="a">Test <a>bold</a></a:root>', nsmap={'a':'a'})
         _roundtrip(b'<root><!-- comment --></root>')
         _roundtrip(b'<root><?pi1 pi text?></root>')
+
+    def test_text_of(self):
+        xml = et.fromstring(b'<a>Hello! <b>World</b>!</a>')
+        text = text_of(scan(xml))
+        self.assertEqual(text, 'Hello! World!')
+
+        xml = et.fromstring(b'<a>Hello! <b>Wor<?mypy?>ld</b>!</a>')
+        text = text_of(scan(xml))
+        self.assertEqual(text, 'Hello! World!')
+
 
 if __name__ == '__main__':
     unittest.main()
