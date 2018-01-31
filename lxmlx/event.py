@@ -170,4 +170,5 @@ def with_peer(events):
             yield obj, None
 
 def text_of(events):
+    """extracts text content from event stream"""
     return ''.join(o['text'] for o in events if o['type']==TEXT)
