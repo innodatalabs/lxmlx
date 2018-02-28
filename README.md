@@ -4,9 +4,35 @@
 
 Helpers and utilities for streaming processing of XML documents. Intended to be used with [lxml](http://lxml.de)
 
-## Requirements
+## Installation
 
-* `lxml` (obviously)
+This package works in Python 2 and Python 3.
+
+If you install using `pip`, all dependencies are automatically fetched and installed:
+
+```
+pip install lxmlx
+```
+
+If you want to build from sources, follow these steps:
+
+### Building and testing (Python 3):
+```
+virtualenv .venv -p python3
+. .venv/bin/activate
+pip install -r requirements.txt
+pip install pytest
+pytest lxmlx
+```
+
+### Building and testing (Python 2):
+```
+virtualenv .venv2 -p python2
+. .venv2/bin/activate
+pip install -r requirements.txt
+pip install pytest
+pytest lxmlx
+```
 
 ## Event stream
 Event stream is XML representation which is equivalent to the in-memory tree.
