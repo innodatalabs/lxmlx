@@ -1,12 +1,9 @@
-from __future__ import unicode_literals
-from __future__ import print_function
 import unittest
 from lxmlx.xml_writer import xml_escape_attr, xml_escape_text, \
     validate_xml_name, validate_xml_text
 import io
 import lxml.etree as et
 import itertools
-from builtins import ord, chr
 
 def valid_xml_characters():
     """ only those can be used in an XML document"""
@@ -78,13 +75,13 @@ class TestXmlEncode(unittest.TestCase):
 
     def test03(self):
 
-        with self.assertRaisesRegexp(RuntimeError, 'empty XML name'):
+        with self.assertRaisesRegex(RuntimeError, 'empty XML name'):
             validate_xml_name('')
 
-        with self.assertRaisesRegexp(RuntimeError, 'XML name contains invalid character'):
+        with self.assertRaisesRegex(RuntimeError, 'XML name contains invalid character'):
             validate_xml_name(' ')
 
-        with self.assertRaisesRegexp(RuntimeError, 'XML name starts with invalid character'):
+        with self.assertRaisesRegex(RuntimeError, 'XML name starts with invalid character'):
             validate_xml_name('-a')
 
     def test03a(self):
@@ -102,11 +99,11 @@ class TestXmlEncode(unittest.TestCase):
         invalid_name_start_chars = set(unicode_range()) - set(valid_xml_name_char_start()) - invalid_name_chars
 
         for x in invalid_name_chars:
-            with self.assertRaisesRegexp(RuntimeError, 'contains invalid character'):
+            with self.assertRaisesRegex(RuntimeError, 'contains invalid character'):
                 validate_xml_name('a' + chr(x))
 
         for x in invalid_name_start_chars:
-            with self.assertRaisesRegexp(RuntimeError, 'starts with invalid character'):
+            with self.assertRaisesRegex(RuntimeError, 'starts with invalid character'):
                 validate_xml_name(chr(x) + 'a')
 
     def test04(self):
@@ -119,6 +116,6 @@ class TestXmlEncode(unittest.TestCase):
         invalid_chars = set(unicode_range()) - set(valid_xml_characters())
 
         for x in invalid_chars:
-            with self.assertRaisesRegexp(RuntimeError, 'invalid XML character: .* at offset 5'):
+            with self.assertRaisesRegex(RuntimeError, 'invalid XML character: .* at offset 5'):
                 print(x)
                 validate_xml_text('text ' + chr(x))
