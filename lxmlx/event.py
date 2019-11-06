@@ -83,12 +83,14 @@ def unscan(events, nsmap=None):
         elif obj['type'] == COMMENT:
             elt = et.Comment(obj['text'])
             stack[-1].append(elt)
+            last_closed_elt = elt
 
         elif obj['type'] == PI:
             elt = et.PI(obj['target'])
             if obj.get('text'):
                 elt.text = obj['text']
             stack[-1].append(elt)
+            last_closed_elt = elt
 
         elif obj['type'] == TEXT:
             text = obj['text']

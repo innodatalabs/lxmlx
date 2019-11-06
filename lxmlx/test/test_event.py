@@ -104,7 +104,9 @@ class TestEventsJson(unittest.TestCase):
         _roundtrip(b'<root a="A" b="B" c="C"/>')
         _roundtrip(b'<a:root xmlns:a="a">Test <a>bold</a></a:root>', nsmap={'a':'a'})
         _roundtrip(b'<root><!-- comment --></root>')
+        _roundtrip(b'<root>Hello<!-- comment -->world</root>')
         _roundtrip(b'<root><?pi1 pi text?></root>')
+        _roundtrip(b'<root>Hello<?pi1 pi text?>world</root>')
 
     def test_text_of(self):
         xml = et.fromstring(b'<a>Hello! <b>World</b>!</a>')
