@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-from __future__ import print_function
 import unittest
 import lxml.etree as et
 from lxmlx.event import scan, unscan, with_peer, text_of

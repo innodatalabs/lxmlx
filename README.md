@@ -6,7 +6,7 @@ Helpers and utilities for streaming processing of XML documents. Intended to be 
 
 ## Installation
 
-This package works in Python 2 and Python 3.
+Attention: this package no longer supports Python 2.
 
 If you install using `pip`, all dependencies are automatically fetched and installed:
 
@@ -20,15 +20,6 @@ If you want to build from sources, follow these steps:
 ```
 virtualenv .venv -p python3
 . .venv/bin/activate
-pip install -r requirements.txt
-pip install pytest
-pytest lxmlx
-```
-
-### Building and testing (Python 2):
-```
-virtualenv .venv2 -p python2
-. .venv2/bin/activate
 pip install -r requirements.txt
 pip install pytest
 pytest lxmlx
