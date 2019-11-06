@@ -4,6 +4,9 @@ from lxmlx import __version__, __description__, __url__, __author__, \
 
 NAME = 'lxmlx'
 
+with open('README.md') as f:
+    long_description = f.read()
+
 setup(
     name=NAME,
     version=__version__,
@@ -12,6 +15,9 @@ setup(
     author=__author__,
     author_email=__author_email__,
     keywords=__keywords__,
+
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 
     license='MIT',
     classifiers=[

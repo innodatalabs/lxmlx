@@ -45,7 +45,7 @@ Each event in the stream is a dict containing at least `type` key
 * `attrib` optional - a dictionary of attributes
 
 Example:
-```
+```python
 {
   'type'  : 'enter',
   'tag'   : 'font',
@@ -64,7 +64,7 @@ event.
 * `type` must be string `"exit"` (or constant `lxmlx.event.EXIT`)
 
 Example:
-```
+```python
 {
   "type": "exit"
 }
@@ -77,7 +77,7 @@ Example:
 * `text` - required
 
 Example:
-```
+```python
 {
   "type": "text",
   "text": "Hello!"
@@ -91,7 +91,7 @@ Payload is:
 * `text` - required
 
 Example:
-```
+```python
 {
   "type": "comment",
   "text": "Hello!"
@@ -106,7 +106,7 @@ Example:
 * `text` - optional PI text content
 
 Example:
-```
+```python
 {
   "type"  : "pi",
   "target": "myPI",
@@ -119,7 +119,7 @@ traversal of XML tree.
 
 ## Example
 XML document below
-```
+```xml
 <book>
    <chapter id="1">Introduction</chapter>
    <chapter id="2">Preface</chapter>
@@ -128,7 +128,7 @@ XML document below
 ```
 
 can equivalently be represented by the following event stream:
-```
+```json
 [
   {"type": "enter", "tag": "book"},
 
